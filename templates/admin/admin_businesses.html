@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Admin Businesses</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="alerts">
+                {% for message in messages %}
+                    <li class="alert alert-info">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    {% if businesses %}
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Business Name</th>
+                <th>Category</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>ZIP Code</th>
+                <th>Description</th>
+                <th>Phone Number</th>
+                <th>Website</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for business in businesses %}
+            <tr>
+                <td>{{ business.id }}</td>
+                <td><a href="{{ url_for('business_details', business_id=business.id) }}">{{ business.business_name }}</a></td>
+                <td>{{ business.business_category }}</td>
+                <td>{{ business.business_address }}</td>
+                <td>{{ business.business_city }}</td>
+                <td>{{ business.business_state }}</td>
+                <td>{{ business.business_zip }}</td>
+                <td>{{ business.business_description }}</td>
+                <td>{{ business.business_phone }}</td>
+                <td>{{ business.business_website }}</td>
+                <td>
+                    <form action="{{ url_for('admin.admin_delete_business', business_id=business.id) }}" method="post">
+                        {{ delete_business_form.csrf_token }}
+                        {{ delete_business_form.business_id(value=business.id) }}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this business?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No businesses found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

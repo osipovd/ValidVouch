@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Pending Appeals</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Review ID</th>
+                    <th scope="col">Reviewer's Name</th>
+                    <th scope="col">Business Name</th>
+                    <th scope="col">Content</th>
+                    <th scope="col">Flag Reason</th>
+                    <th scope="col">Flagged At</th>
+                    <th scope="col">Appeal Reason</th>
+                    <th scope="col">Appeal Timestamp</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appeal in appeals %}
+                <tr>
+                    <td>{{ appeal.review.id }}</td>
+                    <td>{{ appeal.review.user.first_name }} {{ appeal.review.user.last_name }}</td>
+                    <td>{{ appeal.review.business.business_name }}</td>
+                    <td>{{ appeal.review.content }}</td>
+                    <td>{{ appeal.flag_reason }}</td>
+                    <td>{{ appeal.flag_timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ appeal.appeal_reason }}</td>
+                    <td>{{ appeal.appeal_timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.process_appeal', flagged_review_id=appeal.id) }}" class="btn btn-primary btn-sm">Process Appeal</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not appeals %}
+                <tr>
+                    <td colspan="9" class="text-center">No pending appeals found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

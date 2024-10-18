@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Appeal Decision on Flagged Review</h1>
+
+<p>Review flagged because: {{ flagged_review.flag_reason }}</p>
+<p>Admin decision: {{ flagged_review.admin_decision|capitalize }}</p>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.appeal_reason.label }}<br>
+    {{ form.appeal_reason(size=400) }}<br>
+    {% for error in form.appeal_reason.errors %}
+    <span style="color: red;">{{ error }}</span><br>
+    {% endfor %}
+    {{ form.submit() }}
+</form>
+{% endblock %}
+

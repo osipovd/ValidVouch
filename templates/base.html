@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ValidVouch{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">ValidVouch</a>
+            <ul>
+                {% if current_user.is_authenticated %}
+                    <li><a href="/profile">Profile</a></li>
+                    <li><a href="{{ url_for('search_business') }}">Search Business</a></li>
+                    <li><a href="{{ url_for('liked_businesses') }}">My Liked Businesses</a></li>
+                    <li><a href="{{ url_for('register_business') }}">Register Business</a></li>
+                    <li><a href="{{ url_for('my_cases') }}">My Cases</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2024 ValidVouch. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Leave a Review Below</h1>
+<p>Please ensure that all reviews are honorable and honest. Businesses have the right to request a review of any comments left by ValidVouch.</p>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+  {% include "_form.html" %}
+  <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+{% endblock %}

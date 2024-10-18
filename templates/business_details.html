@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ business.business_name }} - Average Rating: {{ average_rating }}</h1>
+    <p><strong>Category:</strong> {{ business.business_category }}</p>
+    <p><strong>Address:</strong> {{ business.full_address() }}</p>
+    <p><strong>Phone:</strong> {{ business.business_phone if business.business_phone else 'N/A' }}</p>
+    <p><strong>Website:</strong> <a href="{{ business.business_website }}" target="_blank">{{ business.business_website if business.business_website else 'N/A' }}</a></p>
+    <p><strong>Description:</strong> {{ business.business_description }}</p>
+
+    <h2>Operating Hours</h2>
+    <p>{{ formatted_hours.replace(', ', '<br>')|safe }}</p>
+    
+    {% if current_user.is_authenticated and current_user.id == business.user_id %}
+        <a href="{{ url_for('edit_business', business_id=business.id) }}" class="btn btn-primary">Edit Business</a>
+    {% endif %}
+    
+    {% if current_user.is_authenticated %}
+        {% if user_has_liked %}
+            <form action="{{ url_for('unlike_business', business_id=business.id) }}" method="post">
+                {{ like_unlike_form.hidden_tag() }}
+                <button type="submit" class="btn btn-warning">Unlike This Business</button>
+            </form>
+        {% else %}
+            <form action="{{ url_for('like_business', business_id=business.id) }}" method="post">
+                {{ like_unlike_form.hidden_tag() }}
+                <button type="submit" class="btn btn-primary">Like This Business</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+    <h2>Reviews</h2>
+
+    <form method="GET" action="{{ url_for('filter_reviews', business_id=business.id) }}">
+        <div class="form-group">
+            <label for="filter_by">Filter by:</label>
+            <select name="filter_by" id="filter_by" class="form-control form-control-sm filter-select">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="highest">Highest Rating</option>
+                <option value="lowest">Lowest Rating</option>
+            </select>
+            <button type="submit" class="btn btn-primary mt-2">Apply Filter</button>
+        </div>
+    </form>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <div class="review">
+                <p><strong>{{ review.user.first_name }} says:</strong></p>
+                <p>{{ review.content }}</p>
+                <p>Rating: {{ review.rating }} Stars</p>
+                <p>Posted on: {{ review.created_at.strftime('%Y-%m-%d') }}</p>
+                <p>Upvotes: {{ vote_counts[review.id]['up'] }} | Downvotes: {{ vote_counts[review.id]['down'] }}</p>
+                <div class="button-group">
+                    <form action="{{ url_for('vote_review', review_id=review.id, vote_type='up') }}" method="post">
+                        {{ vote_forms[review.id].hidden_tag() }}
+                        <button type="submit" class="btn btn-success btn-sm">Thumbs Up</button>
+                    </form>
+                    <form action="{{ url_for('vote_review', review_id=review.id, vote_type='down') }}" method="post">
+                        {{ vote_forms[review.id].hidden_tag() }}
+                        <button type="submit" class="btn btn-danger btn-sm">Thumbs Down</button>
+                    </form>
+                    {% if current_user.is_authenticated and business.user_id == current_user.id %}
+                        {% if review.id not in user_flagged_reviews %}
+                            <form action="{{ url_for('flag_review', review_id=review.id) }}" method="post">
+                                <button type="submit" class="btn btn-warning btn-sm">Flag Review</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% if review.response %}
+                    <div class="response mt-3">
+                        <p><strong>Response from owner:</strong></p>
+                        <p>{{ review.response }}</p>
+                    </div>
+                {% else %}
+                    {% if current_user.is_authenticated and current_user.id == business.user_id %}
+                        <form action="{{ url_for('respond_review', review_id=review.id) }}" method="post" class="mt-3">
+                            {{ business_response_form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ business_response_form.response.label }}
+                                {{ business_response_form.response(class="form-control", rows=3) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Respond</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.id != business.user_id %}
+        {% if not user_has_reviewed %}
+            <a href="{{ url_for('leave_review', business_id=business.id) }}" class="btn btn-primary">Leave a Review</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

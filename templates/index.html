@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1>Welcome to ValidVouch</h1>
+            <p>Please feel free to look up a business's reviews, but you need to be a registered user to leave a review.</p>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <h3 class="text-center">Search for a business below</h3>
+            <form method="POST" action="{{ url_for('index') }}">
+                {{ form.hidden_tag() }}
+                {% include "_form.html" %}
+                <button type="submit" class="btn btn-search mt-3">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if results %}
+<div class="container mt-4">
+    <h3>Search Results:</h3>
+    <ul>
+        {% for business in results %}
+            <li>{{ business.business_name }} - {{ business.business_category }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+

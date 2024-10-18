@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 mb-4 text-center">
+            <h2 class="mb-4">Welcome, {{ current_user.first_name }}!</h2>
+            <h3>Your Details</h3>
+            <ul class="list-unstyled">
+                <li><strong>Email:</strong> {{ current_user.email }}</li>
+                <li><strong>Phone Number:</strong> {{ current_user.phone_number }}</li>
+                <li><strong>Address:</strong> {{ current_user.address }}</li>
+                <li><strong>Date of Birth:</strong> {{ current_user.dob }}</li>
+            </ul>
+            <div class="d-flex justify-content-center">
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-primary me-2">Edit Profile</a>
+                <form action="{{ url_for('delete_user') }}" method="POST" class="d-inline">
+                    {{ delete_user_form.hidden_tag() }}
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h3 class="text-center">Your Businesses</h3>
+            {% for business in user_businesses %}
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <a href="{{ url_for('business_details', business_id=business.id) }}">{{ business.business_name }}</a>
+                        </h5>
+                        <p class="card-text">{{ business.business_description }}</p>
+                        <form action="{{ url_for('delete_business', business_id=business.id) }}" method="POST" class="mt-2">
+                            {{ delete_business_forms[business.id].hidden_tag() }}
+                            <button type="submit" class="btn btn-danger">Delete Business</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">You have no businesses registered.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

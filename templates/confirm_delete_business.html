@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Delete Business</h1>
+    <p>Are you sure you want to delete the following business?</p>
+    <p><strong>Business Name:</strong> {{ business.business_name }}</p>
+    <p><strong>Category:</strong> {{ business.business_category }}</p>
+    <p><strong>Address:</strong> {{ business.full_address() }}</p>
+    <p><strong>Phone:</strong> {{ business.business_phone if business.business_phone else 'N/A' }}</p>
+    <p><strong>Website:</strong> <a href="{{ business.business_website }}" target="_blank">{{ business.business_website if business.business_website else 'N/A' }}</a></p>
+    <p><strong>Description:</strong> {{ business.business_description }}</p>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+            <div class="invalid-feedback">
+                {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    </form>
+</div>
+{% endblock %}

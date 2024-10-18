@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Flag Review</h1>
+    <p>Please provide a detailed reason why you believe this review should be flagged:</p>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Review by {{ review.user.first_name }} {{ review.user.last_name }}</h5>
+            <p class="card-text">{{ review.content }}</p>
+            <p class="card-text"><small class="text-muted">Posted on {{ review.created_at.strftime('%Y-%m-%d') }}</small></p>
+        </div>
+    </div>
+
+    {% if not user_flagged %}
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.reason.label }}
+                    {{ form.reason(class="form-control") }}
+                    {% if form.reason.errors %}
+                        {% for error in form.reason.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-warning">{{ form.submit.label }}</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        You have already flagged this review.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+
